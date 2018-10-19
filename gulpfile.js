@@ -13,6 +13,7 @@ var sass         = require('gulp-sass');
 var browserSync  = require('browser-sync');
 var prefix       = require('gulp-autoprefixer');
 var plumber      = require('gulp-plumber');
+var concat       = require('gulp-concat');
 var uglify       = require('gulp-uglify');
 var rename       = require("gulp-rename");
 var imagemin     = require("gulp-imagemin");
@@ -28,10 +29,14 @@ var pngquant     = require('imagemin-pngquant');
 *
 **/
 gulp.task('scss', function() {
-  gulp.src(['/node_modules/bootstrap/scss/bootstrap.scss', 'src/scss/*.scss'])
+  gulp.src([
+      'node_modules/bootstrap/scss/bootstrap.scss',
+      'scss/*.scss'
+  ])
   .pipe(sass({outputStyle: 'compressed'}))
   .pipe(prefix('last 2 versions', '> 1%', 'ie 8', 'Android 2', 'Firefox ESR'))
   .pipe(plumber())
+  .pipe(concat('style.css'))
   .pipe(gulp.dest('css'));
 });
 
@@ -58,8 +63,14 @@ gulp.task('browser-sync', function() {
 *
 **/
 gulp.task('scripts', function() {
-  gulp.src(['node_modules/bootstrap/dist/js/bootstrap.js','js/*.js'])
+  gulp.src([
+      'node_modules/jquery/dist/jquery.js',
+      'node_modules/popper.js/dist/umd/popper.js',
+      'node_modules/bootstrap/dist/js/bootstrap.js',
+      'js/*.js'
+  ])
   .pipe(uglify())
+  .pipe(concat('scripts.js'))
   .pipe(rename({
     dirname: "min",
     suffix: ".min",
